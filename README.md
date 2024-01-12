@@ -1,5 +1,21 @@
 # Flutter PyTorch Lite
 
+<p>
+   <a href="https://flutter.dev">
+     <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter"
+       alt="Platform" />
+   </a>
+   <a href="https://pub.dev/packages/flutter_pytorch_lite">
+     <img src="https://img.shields.io/pub/v/flutter_pytorch_lite.svg"
+       alt="Pub Package" />
+   </a>
+    <a href="https://pub.dev/documentation/flutter_pytorch_lite/latest/flutter_pytorch_lite/flutter_pytorch_lite-library.html">
+        <img alt="Docs" src="https://readthedocs.org/projects/hubdb/badge/?version=latest">
+    </a>
+    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg">
+  </a>
+</p>
+
 PyTorch Lite plugin for Flutter.
 
 End-to-end workflow from Training to Deployment for iOS and Android mobile devices.
@@ -28,20 +44,14 @@ In the dependency section of `pubspec.yaml` file, add `flutter_pytorch_lite` (ad
 
 ```yaml
 dependencies:
-  flutter_pytorch_lite:
-    git:
-      url: https://github.com/winfordguo/flutter_pytorch_lite.git
+  flutter_pytorch_lite: ^0.0.1
 ```
 or
-
-```shell
-git submodule add https://github.com/winfordguo/flutter_pytorch_lite.git packages/flutter_pytorch_lite
-```
-
 ```yaml
 dependencies:
   flutter_pytorch_lite:
-      path: ./packages/flutter_pytorch_lite
+    git:
+      url: https://github.com/winfordguo/flutter_pytorch_lite.git
 ```
 
 ### Import
