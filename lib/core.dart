@@ -168,6 +168,7 @@ class TensorUint8 extends Tensor {
 
   TensorUint8({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.uint8;
 
   @override
@@ -179,6 +180,7 @@ class TensorInt8 extends Tensor {
 
   TensorInt8({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.int8;
 
   @override
@@ -190,6 +192,7 @@ class TensorInt32 extends Tensor {
 
   TensorInt32({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.int32;
 
   @override
@@ -201,6 +204,7 @@ class TensorFloat32 extends Tensor {
 
   TensorFloat32({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.float32;
 
   @override
@@ -212,6 +216,7 @@ class TensorInt64 extends Tensor {
 
   TensorInt64({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.int64;
 
   @override
@@ -223,6 +228,7 @@ class TensorFloat64 extends Tensor {
 
   TensorFloat64({required super.shape, super.memoryFormat, required this.data});
 
+  @override
   DType get dtype => DType.float64;
 
   @override

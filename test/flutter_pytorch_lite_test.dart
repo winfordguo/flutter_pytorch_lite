@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_pytorch_lite/flutter_pytorch_lite.dart';
 import 'package:flutter_pytorch_lite/flutter_pytorch_lite_method_channel.dart';
 import 'package:flutter_pytorch_lite/flutter_pytorch_lite_platform_interface.dart';
@@ -14,7 +16,8 @@ class MockFlutterPytorchLitePlatform
   Future<void> destroy() => Future.value();
 
   @override
-  Future<Tensor> forward(Tensor tensor) => Future.value();
+  Future<Tensor> forward(Tensor tensor) => Future.value(
+      Tensor.fromBlobUint8(Uint8List(5), Int64List.fromList([1, 5])));
 }
 
 void main() {

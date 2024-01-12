@@ -2,8 +2,6 @@ name: flutter_pytorch_lite
 description: "PyTorch Lite plugin for Flutter."
 version: 0.0.1
 homepage: https://github.com/winfordguo/flutter_pytorch_lite
-authors:
-  - Winford <winfordguo@gmail.com>
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
