@@ -2,17 +2,13 @@
 
 <p>
   <a href="https://flutter.dev">
-    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter" alt="Platform" />
-  </a>
+    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter" alt="Platform" /></a>
   <a href="https://pub.dev/packages/flutter_pytorch_lite">
-    <img src="https://img.shields.io/pub/v/flutter_pytorch_lite.svg" alt="Pub Package" />
-  </a>
+    <img src="https://img.shields.io/pub/v/flutter_pytorch_lite.svg" alt="Pub Package" /></a>
   <a href="https://pub.dev/documentation/flutter_pytorch_lite/latest/flutter_pytorch_lite/flutter_pytorch_lite-library.html">
-    <img src="https://readthedocs.org/projects/hubdb/badge/?version=latest" alt="Docs" />
-  </a>
+    <img src="https://readthedocs.org/projects/hubdb/badge/?version=latest" alt="Docs" /></a>
   <a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License" />
-  </a>
+    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License" /></a>
 </p>
 
 PyTorch Lite plugin for Flutter.
