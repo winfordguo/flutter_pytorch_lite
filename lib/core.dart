@@ -29,7 +29,6 @@ enum MemoryFormat {
 
 /// Codes representing tensor data types.
 enum DType {
-
   /// Code for dtype torch.uint8.
   uint8(1),
 
