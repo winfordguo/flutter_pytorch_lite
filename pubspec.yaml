@@ -1,7 +1,9 @@
 name: flutter_pytorch_lite
 description: "PyTorch Lite plugin for Flutter."
 version: 0.0.1
+description: "PyTorch Lite plugin for Flutter. End-to-end workflow from Training to Deployment for iOS and Android mobile devices."
 homepage: https://github.com/winfordguo/flutter_pytorch_lite
+repository: https://github.com/winfordguo/flutter_pytorch_lite
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
