@@ -12,6 +12,7 @@ enum MemoryFormat {
   channelsLast3d(3),
   ;
 
+  /// Code for memory format.
   final int jniCode;
 
   const MemoryFormat(this.jniCode);
@@ -28,28 +29,27 @@ enum MemoryFormat {
 
 /// Codes representing tensor data types.
 enum DType {
-  // NOTE: "jniCode" must be kept in sync with pytorch_jni_common.cpp.
-  // NOTE: Never serialize "jniCode", because it can change between releases.
 
-  /// Code for dtype torch.uint8. {@link Tensor#dtype()}
+  /// Code for dtype torch.uint8.
   uint8(1),
 
-  /// Code for dtype torch.int8. {@link Tensor#dtype()}
+  /// Code for dtype torch.int8.
   int8(2),
 
-  /// Code for dtype torch.int32. {@link Tensor#dtype()}
+  /// Code for dtype torch.int32.
   int32(3),
 
-  /// Code for dtype torch.float32. {@link Tensor#dtype()}
+  /// Code for dtype torch.float32.
   float32(4),
 
-  /// Code for dtype torch.int64. {@link Tensor#dtype()}
+  /// Code for dtype torch.int64.
   int64(5),
 
-  /// Code for dtype torch.float64. {@link Tensor#dtype()}
+  /// Code for dtype torch.float64.
   float64(6),
   ;
 
+  /// Code for dtype.
   final int jniCode;
 
   const DType(this.jniCode);
