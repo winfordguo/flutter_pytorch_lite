@@ -90,7 +90,7 @@ Refer to the documentation for info on creating interpreter from buffer or file.
     ```dart
     // For ex: if input tensor shape [1,5] and type is float32
     final inputShape = Int64List.fromList([1, 5]);
-    var input = [[1.23, 6.54, 7.81, 3.21, 2.22]];
+    var input = [1.23, 6.54, 7.81, 3.21, 2.22];
     Tensor inputTensor = Tensor.fromBlobFloat32(input, inputShape);
 
     // forward
