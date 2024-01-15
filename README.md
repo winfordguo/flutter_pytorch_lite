@@ -39,7 +39,7 @@ In the dependency section of `pubspec.yaml` file, add `flutter_pytorch_lite` (ad
 
 ```yaml
 dependencies:
-  flutter_pytorch_lite: ^0.0.1
+  flutter_pytorch_lite: ^0.0.1+1
 ```
 or
 ```yaml
