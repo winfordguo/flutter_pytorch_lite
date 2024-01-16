@@ -80,8 +80,6 @@ import 'package:flutter_pytorch_lite/flutter_pytorch_lite.dart';
     }
     ```
 
-Refer to the documentation for info on creating interpreter from buffer or file.
-
 ### Forwarding
 
 * **For single input and output**
@@ -106,9 +104,10 @@ Refer to the documentation for info on creating interpreter from buffer or file.
 
 ### Destroying the model
 
-```dart
-await FlutterPytorchLite.destroy();
-```
+* **Destroy the model**
+    ```dart
+    await FlutterPytorchLite.destroy();
+    ```
 
 ## Q&A
 
@@ -129,8 +128,8 @@ await FlutterPytorchLite.destroy();
   android {
      // your existing code
      packagingOptions {
-          pickFirst '**/libc++_shared.so'
-      }
+         pickFirst '**/libc++_shared.so'
+     }
   }
   ```
 
