@@ -59,55 +59,55 @@ import 'package:flutter_pytorch_lite/flutter_pytorch_lite.dart';
 
 * **From path**
 
-    ```dart
-    await FlutterPytorchLite.load('/path/to/your_model.ptl');
-    ```
+  ```dart
+  await FlutterPytorchLite.load('/path/to/your_model.ptl');
+  ```
 
 * **From asset**
 
   Place `your_model.ptl` in `assets` directory. Make sure to include assets in `pubspec.yaml`.
 
-    ```dart
-    final filePath = '${Directory.systemTemp.path}/your_model.ptl';
-    File(filePath).writeAsBytesSync(await _getBuffer('assets/your_model.ptl'));
-    await FlutterPytorchLite.load(filePath);
-  
-    /// Get byte buffer
-    static Future<Uint8List> _getBuffer(String assetFileName) async {
-      ByteData rawAssetFile = await rootBundle.load(assetFileName);
-      final rawBytes = rawAssetFile.buffer.asUint8List();
-      return rawBytes;
-    }
-    ```
+  ```dart
+  final filePath = '${Directory.systemTemp.path}/your_model.ptl';
+  File(filePath).writeAsBytesSync(await _getBuffer('assets/your_model.ptl'));
+  await FlutterPytorchLite.load(filePath);
+
+  /// Get byte buffer
+  static Future<Uint8List> _getBuffer(String assetFileName) async {
+    ByteData rawAssetFile = await rootBundle.load(assetFileName);
+    final rawBytes = rawAssetFile.buffer.asUint8List();
+    return rawBytes;
+  }
+  ```
 
 ### Forwarding
 
 * **For single input and output**
 
   Use `static Tensor forward(Tensor input)`.
-    ```dart
-    // For ex: if input tensor shape [1,5] and type is float32
-    final inputShape = Int64List.fromList([1, 5]);
-    var input = [1.23, 6.54, 7.81, 3.21, 2.22];
-    Tensor inputTensor = Tensor.fromBlobFloat32(input, inputShape);
+  ```dart
+  // For ex: if input tensor shape [1,5] and type is float32
+  final inputShape = Int64List.fromList([1, 5]);
+  var input = [1.23, 6.54, 7.81, 3.21, 2.22];
+  Tensor inputTensor = Tensor.fromBlobFloat32(input, inputShape);
 
-    // forward
-    Tensor outputTensor = await FlutterPytorchLite.forward(inputTensor);
+  // forward
+  Tensor outputTensor = await FlutterPytorchLite.forward(inputTensor);
 
-    // Get output tensor: if output tensor type is float32
-    final outputShape = outputTensor.shape;
-    var output = outputTensor.dataAsFloat32List;
+  // Get output tensor: if output tensor type is float32
+  final outputShape = outputTensor.shape;
+  var output = outputTensor.dataAsFloat32List;
 
-    // print the output
-    print(output);
-    ```
+  // print the output
+  print(output);
+  ```
 
 ### Destroying the model
 
 * **Destroy the model**
-    ```dart
-    await FlutterPytorchLite.destroy();
-    ```
+  ```dart
+  await FlutterPytorchLite.destroy();
+  ```
 
 ## Q&A
 
