@@ -26,7 +26,7 @@ PyTorch Mobile is in beta stage right now, and is already in wide scale producti
 
 A simple image classification application that demonstrates how to use the `flutter_pytorch_lite` plugin.
 
-<p><img src="example/screenshots/0.png" alt="Flutter PyTorch Lite Example" /></p>
+<p><img src="https://raw.githubusercontent.com/winfordguo/flutter_pytorch_lite/main/example/screenshots/0.png" alt="Flutter PyTorch Lite Example" /></p>
 
 ## Getting Started
 
