@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -27,26 +28,17 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    helper.initHelper();
-
-    classified();
+    helper.initHelper().then((_) {
+      classified();
+    });
   }
 
   Future<void> classified() async {
-    ui.Image image = await _loadImage();
+    ui.Image image = await TensorImageUtils.imageProviderToImage(assetImage);
     classification = await helper.inferenceImage(image);
 
     if (!mounted) return;
     setState(() {});
-  }
-
-  Future<ui.Image> _loadImage() {
-    Completer<ui.Image> completer = Completer.sync();
-    assetImage.resolve(ImageConfiguration.empty).addListener(
-        ImageStreamListener((ImageInfo image, bool synchronousCall) {
-      if (!completer.isCompleted) completer.complete(image.image);
-    }));
-    return completer.future;
   }
 
   @override
@@ -73,7 +65,8 @@ class _MyAppState extends State<MyApp> {
                     child: SingleChildScrollView(
                   child: Text(
                     classification!.keys
-                        .map((key) => '$key: ${classification?[key]}')
+                        .map((key) =>
+                            '$key: ${classification?[key]?.toStringAsFixed(2)}')
                         .join('\n'),
                     textAlign: TextAlign.center,
                   ),
@@ -90,15 +83,17 @@ class ImageClassificationHelper {
   static const modelPath = 'assets/models/model.ptl';
   static const labelsPath = 'assets/models/words.txt';
 
-  late final List<String> labels;
   final Int64List inputShape = Int64List.fromList([1, 3, 224, 224]);
   final Int64List outputShape = Int64List.fromList([1, 1000]);
+  late final List<String> labels;
+  Module? mModule;
 
   // Load model
   Future<void> _loadModel() async {
     final filePath = '${Directory.systemTemp.path}/model.ptl';
     File(filePath).writeAsBytesSync(await _getBuffer(modelPath));
-    await FlutterPytorchLite.load(filePath);
+    mModule = await FlutterPytorchLite.load(filePath);
+    // mModule = await FlutterPytorchLite.load('notExistPath.ptl');
 
     print('Interpreter loaded successfully');
   }
@@ -117,64 +112,65 @@ class ImageClassificationHelper {
   }
 
   Future<void> initHelper() async {
-    _loadLabels();
-    _loadModel();
+    await _loadLabels();
+    await _loadModel();
   }
 
   // inference still image
   Future<Map<String, double>> inferenceImage(ui.Image image) async {
-    final height = inputShape[2];
-    final width = inputShape[3];
-    ui.Image imageInput = await _resizeImage(image, width, height);
-
-    // rgba
-    final pixels = (await imageInput.toByteData(
-            format: ui.ImageByteFormat.rawExtendedRgba128))!
-        .buffer
-        .asFloat32List();
-    // rgb
-    final imageMatrix = Float32List.fromList(
-        List.generate(inputShape[0] * inputShape[1] * height * width, (index) {
-      final pixelIdx = index ~/ inputShape[1];
-      final rgbIdx = index % inputShape[1];
-      return pixels[pixelIdx * 4 + rgbIdx];
-    }));
-    Tensor inputTensor = Tensor.fromBlobFloat32(imageMatrix, inputShape);
+    // input tensor
+    Tensor inputTensor = await TensorImageUtils.imageToFloat32Tensor(
+      image,
+      width: inputShape[3],
+      height: inputShape[2],
+    );
 
     // Forward
-    Tensor outputTensor = await FlutterPytorchLite.forward(inputTensor);
+    IValue input = IValue.from(inputTensor);
+    IValue output = await mModule!.forward([input]);
+
+    // output tensor
+    Tensor outputTensor = output.toTensor();
 
     // Get output tensor
     final result = outputTensor.dataAsFloat32List;
 
+    // probabilities
+    final prob = softmax(result);
+
     // Set classification map {label: points}
     var classification = <String, double>{};
-    for (var i = 0; i < result.length; i++) {
-      if (result[i] != 0) {
+    for (var i = 0; i < prob.length; i++) {
+      if (prob[i] != 0) {
         // Set label: points
-        classification[labels[i]] = result[i];
+        classification[labels[i]] = prob[i];
       }
     }
-    return classification;
+
+    // top 5 indices
+    final top5i = (classification.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value)))
+        .getRange(0, 5)
+        // .map((e) => MapEntry(e.key, (e.value * 100).toInt() / 100))
+        .toList();
+    return Map.fromEntries(top5i);
   }
 
-  // Resizes an [ui.Image] to a given [targetWidth] and [targetHeight]
-  Future<ui.Image> _resizeImage(
-      ui.Image image, int targetWidth, int targetHeight) {
-    final recorder = ui.PictureRecorder();
-    final canvas = ui.Canvas(recorder);
+  List<double> softmax(List<double> logits) {
+    // Step 1: Compute the exponential of each element
+    List<double> expValues = logits.map((x) => exp(x)).toList();
 
-    canvas.drawImageRect(
-      image,
-      ui.Rect.fromLTRB(0, 0, image.width.toDouble(), image.height.toDouble()),
-      ui.Rect.fromLTRB(0, 0, targetWidth.toDouble(), targetHeight.toDouble()),
-      ui.Paint(),
-    );
+    // Step 2: Compute the sum of all exponentials
+    double sumExpValues = expValues.reduce((a, b) => a + b);
 
-    return recorder.endRecording().toImage(targetWidth, targetHeight);
+    // Step 3: Normalize each value by the sum of exponentials
+    List<double> probabilities =
+        expValues.map((x) => x / sumExpValues).toList();
+
+    return probabilities;
   }
 
   Future<void> close() async {
-    await FlutterPytorchLite.destroy();
+    await mModule?.destroy();
   }
 }

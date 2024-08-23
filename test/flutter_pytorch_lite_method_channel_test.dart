@@ -17,7 +17,7 @@ void main() {
       channel,
       (MethodCall methodCall) async {
         if (methodCall.method == 'load') {
-          return null;
+          return 0;
         } else if (methodCall.method == 'destroy') {
           return null;
         } else if (methodCall.method == 'forward') {
@@ -35,11 +35,13 @@ void main() {
   });
 
   test('load', () async {
-    await platform.load('');
+    int moduleId = await platform.load('');
     expect(
-        await platform.forward(Tensor.fromBlobFloat32(
-            Float32List(1 * 3 * 224 * 224),
-            Int64List.fromList([1, 3, 224, 224]))),
-        Tensor.fromBlobFloat32(Float32List(1 * 8), Int64List.fromList([1, 8])));
+        await platform.forward(moduleId, [
+          IValue.from(Tensor.fromBlobFloat32(Float32List(1 * 3 * 224 * 224),
+              Int64List.fromList([1, 3, 224, 224])))
+        ]),
+        IValue.from(Tensor.fromBlobFloat32(
+            Float32List(1 * 8), Int64List.fromList([1, 8]))));
   });
 }

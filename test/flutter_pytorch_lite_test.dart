@@ -10,14 +10,15 @@ class MockFlutterPytorchLitePlatform
     with MockPlatformInterfaceMixin
     implements FlutterPytorchLitePlatform {
   @override
-  Future<void> load(String filePath) => Future.value();
+  Future<int> load(String filePath) => Future.value(0);
 
   @override
-  Future<void> destroy() => Future.value();
+  Future<void> destroy(int moduleId) => Future.value();
 
   @override
-  Future<Tensor> forward(Tensor tensor) => Future.value(
-      Tensor.fromBlobUint8(Uint8List(5), Int64List.fromList([1, 5])));
+  Future<IValue> forward(int moduleId, List<IValue> inputs) =>
+      Future.value(IValue.from(
+          Tensor.fromBlobUint8(Uint8List(5), Int64List.fromList([1, 5]))));
 }
 
 void main() {

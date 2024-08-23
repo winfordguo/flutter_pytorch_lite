@@ -20,27 +20,55 @@ public class FlutterPytorchLitePlugin: NSObject, FlutterPlugin {
         let instance = FlutterPytorchLitePlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
-    
-    private var mModule: TorchModule?
+
+    // private Module mModule;
+    // private static final ConcurrentHashMap<Integer, Module> mModules = new ConcurrentHashMap<>();
+//     private var mModule: TorchModule?
+    private var mModules: [Int: TorchModule] = [:]
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "load":
             let arguments = call.arguments as! Dictionary<String, Any>
             let filePath = arguments["filePath"] as! String
-            mModule = TorchModule(fileAtPath: filePath)
-            
-            result(String(format: "module %d", mModule.hashValue))
+            let mModule = TorchModule(fileAtPath: filePath)
+            if (mModule == nil) {
+                result(FlutterError(code: "loadError",
+                                    message: "Pytorch lite load module error",
+                                    details: nil))
+                return
+            }
+            mModules[mModule.hashValue] = mModule
+            result(mModule.hashValue)
         case "destroy":
+            let arguments = call.arguments as! Dictionary<String, Any>
+            let moduleId = arguments["moduleId"] as! Int
+            let mModule = mModules[moduleId]
+            mModules.removeValue(forKey: moduleId)
             mModule?.destroy()
-            mModule = nil
-            
+
             result(nil)
         case "forward":
-            let input = call.arguments as! Dictionary<String, Any>
-            let output = mModule?.forward(map: input)
-
-            result(output)
+            let arguments = call.arguments as! Dictionary<String, Any>
+            let moduleId = arguments["moduleId"] as! Int
+            let mModule = mModules[moduleId]
+            if (mModule == nil) {
+                result(FlutterError(code: "forwardError",
+                                    message: "Pytorch lite forward module error, module is nil",
+                                    details: nil))
+                return
+            }
+            assert(arguments["inputs"] != nil)
+            let inputs = arguments["inputs"] as! [Dictionary<String, Any>]
+            assert(inputs.count > 0)
+            let outputs = mModule?.forward(array: inputs)
+            if (outputs == nil) {
+                result(FlutterError(code: "forwardError",
+                                    message: "Pytorch lite forward module error, outputs is nil",
+                                    details: nil))
+                return
+            }
+            result(outputs)
         default:
             result(FlutterMethodNotImplemented)
         }

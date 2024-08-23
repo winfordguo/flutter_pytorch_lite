@@ -41,7 +41,7 @@ android {
         testImplementation 'junit:junit:4.13.2'
         testImplementation 'org.mockito:mockito-core:5.0.0'
 
-        def pytorch_version = "1.10.0"
+        def pytorch_version = "1.13.1"
         implementation "org.pytorch:pytorch_android_lite:$pytorch_version"
         implementation "org.pytorch:pytorch_android_torchvision_lite:$pytorch_version"
     }

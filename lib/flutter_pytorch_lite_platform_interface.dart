@@ -29,15 +29,15 @@ abstract class FlutterPytorchLitePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> load(String filePath) {
+  Future<int> load(String filePath) {
     throw UnimplementedError('load() has not been implemented.');
   }
 
-  Future<void> destroy() {
+  Future<void> destroy(int moduleId) {
     throw UnimplementedError('destroy() has not been implemented.');
   }
 
-  Future<Tensor> forward(Tensor tensor) {
+  Future<IValue> forward(int moduleId, List<IValue> inputs) {
     throw UnimplementedError('forward() has not been implemented.');
   }
 }

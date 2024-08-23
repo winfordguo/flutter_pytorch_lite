@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.dependency 'Flutter'
   # Pytorch Lite
-  s.dependency 'LibTorch-Lite', '~> 1.10.0'
+  s.dependency 'LibTorch-Lite', '~> 1.13.0.1'
   s.platform = :ios, '12.0'
   
   # Flutter.framework does not contain a i386 slice.

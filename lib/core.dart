@@ -5,6 +5,295 @@ part of 'flutter_pytorch_lite.dart';
 /// @author guoweifeng
 /// @date 2024/1/10 10:37
 
+/// IValue
+class IValue {
+  static const int typeCodeNull = 1;
+  static const int typeCodeTensor = 2;
+  static const int typeCodeBool = 3;
+  static const int typeCodeLong = 4;
+  static const int typeCodeDouble = 5;
+  static const int typeCodeString = 6;
+  static const int typeCodeTuple = 7;
+  static const int typeCodeBoolList = 8;
+  static const int typeCodeLongList = 9;
+  static const int typeCodeDoubleList = 10;
+  static const int typeCodeTensorList = 11;
+  static const int typeCodeList = 12;
+  static const int typeCodeDictStringKey = 13;
+  static const int typeCodeDictLongKey = 14;
+
+  List<String> typeNames = [
+    "Unknown",
+    "Null",
+    "Tensor",
+    "Bool",
+    "Long",
+    "Double",
+    "String",
+    "Tuple",
+    "BoolList",
+    "LongList",
+    "DoubleList",
+    "TensorList",
+    "GenericList",
+    "DictStringKey",
+    "DictLongKey",
+  ];
+
+  final int _typeCode;
+  final _data;
+
+  IValue._({required int typeCode, data})
+      : _typeCode = typeCode,
+        _data = data;
+
+  bool get isNull => typeCodeNull == _typeCode;
+
+  bool get isTensor => typeCodeTensor == _typeCode;
+
+  bool get isBool => typeCodeBool == _typeCode;
+
+  bool get isLong => typeCodeLong == _typeCode;
+
+  bool get isDouble => typeCodeDouble == _typeCode;
+
+  bool get isString => typeCodeString == _typeCode;
+
+  bool get isTuple => typeCodeTuple == _typeCode;
+
+  bool get isBoolList => typeCodeBoolList == _typeCode;
+
+  bool get isLongList => typeCodeLongList == _typeCode;
+
+  bool get isDoubleList => typeCodeDoubleList == _typeCode;
+
+  bool get isTensorList => typeCodeTensorList == _typeCode;
+
+  bool get isList => typeCodeList == _typeCode;
+
+  bool get isDictStringKey => typeCodeDictStringKey == _typeCode;
+
+  bool get isDictLongKey => typeCodeDictLongKey == _typeCode;
+
+  Tensor toTensor() {
+    _preconditionType(typeCodeTensor, _typeCode);
+    return _data;
+  }
+
+  bool toBool() {
+    _preconditionType(typeCodeBool, _typeCode);
+    return _data;
+  }
+
+  int toLong() {
+    _preconditionType(typeCodeLong, _typeCode);
+    return _data;
+  }
+
+  double toDouble() {
+    _preconditionType(typeCodeDouble, _typeCode);
+    return _data;
+  }
+
+  String toStr() {
+    _preconditionType(typeCodeString, _typeCode);
+    return _data;
+  }
+
+  List<bool> toBoolList() {
+    _preconditionType(typeCodeBoolList, _typeCode);
+    return _data;
+  }
+
+  List<int> toLongList() {
+    _preconditionType(typeCodeLongList, _typeCode);
+    return _data;
+  }
+
+  List<double> toDoubleList() {
+    _preconditionType(typeCodeDoubleList, _typeCode);
+    return _data;
+  }
+
+  List<Tensor> toTensorList() {
+    _preconditionType(typeCodeTensorList, _typeCode);
+    return _data;
+  }
+
+  List<IValue> toList() {
+    _preconditionType(typeCodeList, _typeCode);
+    return _data;
+  }
+
+  List<IValue> toTuple() {
+    _preconditionType(typeCodeTuple, _typeCode);
+    return _data;
+  }
+
+  Map<String, IValue> toDictStringKey() {
+    _preconditionType(typeCodeDictStringKey, _typeCode);
+    return _data;
+  }
+
+  Map<int, IValue> toDictLongKey() {
+    _preconditionType(typeCodeDictLongKey, _typeCode);
+    return _data;
+  }
+
+  void _preconditionType(int typeCodeExpected, int typeCode) {
+    if (typeCode != typeCodeExpected) {
+      throw StateError(
+          'Expected IValue type ${_getTypeName(typeCodeExpected)}, actual type ${_getTypeName(typeCode)}');
+    }
+  }
+
+  String _getTypeName(int typeCode) {
+    return typeCode >= 0 && typeCode < typeNames.length
+        ? typeNames[typeCode]
+        : "Unknown";
+  }
+
+  static IValue optionalNull() {
+    return IValue._(typeCode: typeCodeNull);
+  }
+
+  static IValue from(value) {
+    if (value is Tensor) {
+      return IValue._(typeCode: typeCodeTensor, data: value);
+    } else if (value is bool) {
+      return IValue._(typeCode: typeCodeBool, data: value);
+    } else if (value is int) {
+      return IValue._(typeCode: typeCodeLong, data: value);
+    } else if (value is double) {
+      return IValue._(typeCode: typeCodeDouble, data: value);
+    } else if (value is String) {
+      return IValue._(typeCode: typeCodeString, data: value);
+    } else if (value is List) {
+      throw ArgumentError("Please use listFrom() or tupleFrom() instead");
+    } else if (value is Map) {
+      throw ArgumentError(
+          "Please use dictStringKeyFrom() or dictLongKeyFrom() instead");
+    }
+    throw ArgumentError("Unsupported type ${value.runtimeType}");
+  }
+
+  static IValue listFrom(List list) {
+    if (list is List<bool>) {
+      return IValue._(typeCode: typeCodeBoolList, data: list);
+    } else if (list is List<int>) {
+      return IValue._(typeCode: typeCodeLongList, data: list);
+    } else if (list is List<double>) {
+      return IValue._(typeCode: typeCodeDoubleList, data: list);
+    } else if (list is List<Tensor>) {
+      return IValue._(typeCode: typeCodeTensorList, data: list);
+    } else if (list is List<IValue>) {
+      final size = list.length;
+      if (size > 0) {
+        final typeCode0 = list.first._typeCode;
+        for (var i = 1; i < size; i++) {
+          if (list[i]._typeCode != typeCode0) {
+            throw ArgumentError("List must contain items of the same type");
+          }
+        }
+      }
+      return IValue._(typeCode: typeCodeList, data: list);
+    }
+    throw ArgumentError("Unsupported type ${list.runtimeType}");
+  }
+
+  static IValue tupleFrom(List<IValue> array) {
+    return IValue._(typeCode: typeCodeTuple, data: array);
+  }
+
+  static IValue dictStringKeyFrom(Map<String, IValue> map) {
+    return IValue._(typeCode: typeCodeDictStringKey, data: map);
+  }
+
+  static IValue dictLongKeyFrom(Map<int, IValue> map) {
+    return IValue._(typeCode: typeCodeDictLongKey, data: map);
+  }
+
+  static IValue fromMap(map) {
+    final typeCode = map['typeCode'];
+    final data = map['data'];
+    switch (typeCode) {
+      case typeCodeNull:
+        return optionalNull();
+      case typeCodeTensor:
+        return from(Tensor.fromMap(data));
+      case typeCodeBool:
+      case typeCodeLong:
+      case typeCodeDouble:
+      case typeCodeString:
+        return from(data);
+      case typeCodeTuple:
+        return tupleFrom(data.map(fromMap).toList().cast<IValue>());
+      case typeCodeBoolList:
+      case typeCodeLongList:
+      case typeCodeDoubleList:
+        return listFrom(data);
+      case typeCodeTensorList:
+        return listFrom(data.map(Tensor.fromMap).toList().cast<Tensor>());
+      case typeCodeList:
+        return listFrom(data.map(fromMap).toList().cast<IValue>());
+      case typeCodeDictStringKey:
+        final Map<String, IValue> valueMap = {};
+        data.forEach((key, value) {
+          valueMap[key] = fromMap(value);
+        });
+        return dictStringKeyFrom(valueMap);
+      case typeCodeDictLongKey:
+        final Map<int, IValue> valueMap = {};
+        data.forEach((key, value) {
+          valueMap[key] = fromMap(value);
+        });
+        return dictLongKeyFrom(valueMap);
+      default:
+        throw ArgumentError("Unsupported type $typeCode");
+    }
+  }
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {'typeCode': _typeCode};
+    switch (_typeCode) {
+      case typeCodeNull:
+        break;
+      case typeCodeTensor:
+        map['data'] = _data.toMap();
+        break;
+      case typeCodeBool:
+      case typeCodeLong:
+      case typeCodeDouble:
+      case typeCodeString:
+        map['data'] = _data;
+        break;
+      case typeCodeBoolList:
+      case typeCodeLongList:
+        map['data'] = Int64List.fromList(_data);
+        break;
+      case typeCodeDoubleList:
+        map['data'] = Float64List.fromList(_data);
+        break;
+      case typeCodeTensorList:
+        map['data'] = _data.map((tensor) => tensor.toMap()).toList();
+        break;
+      case typeCodeTuple:
+      case typeCodeList:
+        map['data'] = _data.map((value) => value.toMap()).toList();
+        break;
+      case typeCodeDictStringKey:
+      case typeCodeDictLongKey:
+        final Map valueMap = {};
+        _data.forEach((key, value) => valueMap[key] = value.toMap());
+        map['data'] = valueMap;
+        break;
+      default:
+        throw ArgumentError("Unsupported type $_typeCode");
+    }
+    return map;
+  }
+}
+
 /// Memory format of tensor data.
 enum MemoryFormat {
   contiguous(1),

@@ -15,20 +15,25 @@ class MethodChannelFlutterPytorchLite extends FlutterPytorchLitePlatform {
   final methodChannel = const MethodChannel('flutter_pytorch_lite');
 
   @override
-  Future<void> load(String filePath) async {
-    return methodChannel.invokeMethod<void>('load', {
+  Future<int> load(String filePath) async {
+    return (await methodChannel.invokeMethod<int>('load', {
       'filePath': filePath,
+    }))!;
+  }
+
+  @override
+  Future<void> destroy(int moduleId) {
+    return methodChannel.invokeMethod<void>('destroy', {
+      'moduleId': moduleId,
     });
   }
 
   @override
-  Future<void> destroy() {
-    return methodChannel.invokeMethod<void>('destroy');
-  }
-
-  @override
-  Future<Tensor> forward(Tensor tensor) async {
-    final map = await methodChannel.invokeMethod('forward', tensor.toMap());
-    return Tensor.fromMap(map);
+  Future<IValue> forward(int moduleId, List<IValue> inputs) async {
+    final map = await methodChannel.invokeMethod('forward', {
+      'moduleId': moduleId,
+      'inputs': inputs.map((e) => e.toMap()).toList(),
+    });
+    return IValue.fromMap(map);
   }
 }
