@@ -67,7 +67,7 @@ import 'package:flutter_pytorch_lite/flutter_pytorch_lite.dart';
 
 ##### Export
 
-* **Export `PyTorch` Module to `TorchScript` for `PyTorch Mobile` **
+* **Export `PyTorch` Module to `TorchScript` for `PyTorch Mobile`**
 
   > Use [torch.utils.mobile_optimizer](https://pytorch.org/tutorials/recipes/mobile_interpreter.html)
   ```python
