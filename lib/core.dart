@@ -41,7 +41,7 @@ class IValue {
   ];
 
   final int _typeCode;
-  final _data;
+  final dynamic _data;
 
   IValue._({required int typeCode, data})
       : _typeCode = typeCode,
