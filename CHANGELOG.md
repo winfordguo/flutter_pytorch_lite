@@ -1,3 +1,7 @@
+## 0.1.0+2
+
+* clean and add topics.
+
 ## 0.1.0+1
 
 * Fix readme.
